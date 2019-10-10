@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "GradientOperators.h"
-#include "GradientOperatorsCV.h"
-#include "Utilities.h"
+#include "../include/ED/GradientOperators.h"
+#include "../include/ED/GradientOperatorsCV.h"
+#include "../include/ED/Utilities.h"
 
 /// Special defines
 #define EDGE_VERTICAL   1

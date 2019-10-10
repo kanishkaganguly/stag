@@ -3,7 +3,7 @@
 #include <math.h>
 #include <limits.h>
 
-#include "EDInternals.h"
+#include "../include/ED/EDInternals.h"
 
 /// Special defines
 #define EDGE_VERTICAL   1

@@ -9,14 +9,14 @@
 
 //#include "EDDLL.h"
 
-#include "EDInternals.h"
-#include "ED.h"
-#include "ImageSmooth.h"
-#include "GradientOperators.h"
-#include "ValidateEdgeSegments.h"
+#include "../include/ED/EDInternals.h"
+#include "../include/ED/ED.h"
+#include "../include/ED/ImageSmooth.h"
+#include "../include/ED/GradientOperators.h"
+#include "../include/ValidateEdgeSegments.h"
 
-#include "Utilities.h"
-#include "Timer.h"
+#include "../include/ED/Utilities.h"
+#include "../include/ED/Timer.h"
 
 //Burak - won't be needing this
 //#include "ImageVideoLib.h"

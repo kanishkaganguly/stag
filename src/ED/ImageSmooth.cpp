@@ -2,8 +2,8 @@
 #include <opencv/cv.h>
 #include <opencv/cxcore.h>
 
-#include "ImageSmooth.h"
-#include "ImageSmoothCV.h"
+#include "../include/ED/ImageSmooth.h"
+#include "../include/ED/ImageSmoothCV.h"
 
 ///----------------------------------------------------------
 /// Copy from our buffer to Ipl image buffer taking care of the alignment

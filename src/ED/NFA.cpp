@@ -2,7 +2,7 @@
 #include <limits.h>
 #include <float.h>
 #include <math.h>
-#include "NFA.h"
+#include "../include/ED/NFA.h"
 
 /// nfa function prototype
 double nfa(int n, int k, double p, double logNT);

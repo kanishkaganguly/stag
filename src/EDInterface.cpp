@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <vector>
-#include "EDInterface.h"
+#include "../include/EDInterface.h"
 #include "utility.h"
 
 using std::vector;
