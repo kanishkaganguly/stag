@@ -7,8 +7,7 @@
 using cv::Mat;
 using cv::Point2d;
 
-Stag::Stag(int libraryHD, int inErrorCorrection, bool inKeepLogs)
-{
+Stag::Stag(int libraryHD, int inErrorCorrection, bool inKeepLogs) {
 	keepLogs = inKeepLogs;
 	errorCorrection = inErrorCorrection;
 	quadDetector = QuadDetector(keepLogs);
@@ -16,27 +15,22 @@ Stag::Stag(int libraryHD, int inErrorCorrection, bool inKeepLogs)
 	decoder = Decoder(libraryHD);
 }
 
-
-void Stag::detectMarkers(Mat inImage)
-{
+void Stag::detectMarkers(Mat inImage) {
 	image = inImage;
 	quadDetector.detectQuads(image, &edInterface);
 
 	vector<Quad> quads = quadDetector.getQuads();
 
-	for (int indQuad = 0; indQuad < quads.size(); indQuad++)
-	{
+	for (int indQuad = 0; indQuad < quads.size(); indQuad++) {
 		quads[indQuad].estimateHomography();
 		Codeword c = readCode(quads[indQuad]);
 		int shift;
 		int id;
-		if (decoder.decode(c, errorCorrection, id, shift))
-		{
+		if (decoder.decode(c, errorCorrection, id, shift)) {
 			Marker marker(quads[indQuad], id);
 			marker.shiftCorners2(shift);
 			markers.push_back(marker);
-		}
-		else if (keepLogs)
+		} else if (keepLogs)
 			falseCandidates.push_back(quads[indQuad]);
 	}
 
@@ -44,9 +38,7 @@ void Stag::detectMarkers(Mat inImage)
 		poseRefiner.refineMarkerPose(&edInterface, markers[indMarker]);
 }
 
-
-void Stag::logResults(string path)
-{
+void Stag::logResults(string path) {
 	drawer.drawEdgeMap(path + "1 edges.png", image, edInterface.getEdgeMap());
 	drawer.drawLines(path + "2 lines.png", image, edInterface.getEDLines());
 	drawer.drawCorners(path + "3 corners.png", image, quadDetector.getCornerGroups());
@@ -59,25 +51,24 @@ void Stag::logResults(string path)
 	drawer.drawEllipses(path + "8 ellipses.png", image, markers);
 }
 
+void Stag::drawResults(cv::Mat &inImage) {
+	drawer.drawQuads(inImage, quadDetector.getQuads());
+}
 
-Codeword Stag::readCode(const Quad &q)
-{
+Codeword Stag::readCode(const Quad &q) {
 	// take readings from 48 code locations, 12 black border locations, and 12 white border locations
 	vector<unsigned char> samples(72);
 
 	// a better idea may be creating a list of points to be sampled and let the OpenCV's interpolation function handle the sampling
-	for (int i = 0; i < 48; i++)
-	{
+	for (int i = 0; i < 48; i++) {
 		Mat projectedPoint = q.H * codeLocs[i];
 		samples[i] = readPixelSafeBilinear(image, Point2d(projectedPoint.at<double>(0) / projectedPoint.at<double>(2), projectedPoint.at<double>(1) / projectedPoint.at<double>(2)));
 	}
-	for (int i = 0; i < 12; i++)
-	{
+	for (int i = 0; i < 12; i++) {
 		Mat projectedPoint = q.H * blackLocs[i];
 		samples[i + 48] = readPixelSafeBilinear(image, Point2d(projectedPoint.at<double>(0) / projectedPoint.at<double>(2), projectedPoint.at<double>(1) / projectedPoint.at<double>(2)));
 	}
-	for (int i = 0; i < 12; i++)
-	{
+	for (int i = 0; i < 12; i++) {
 		Mat projectedPoint = q.H * whiteLocs[i];
 		samples[i + 60] = readPixelSafeBilinear(image, Point2d(projectedPoint.at<double>(0) / projectedPoint.at<double>(2), projectedPoint.at<double>(1) / projectedPoint.at<double>(2)));
 	}
@@ -93,8 +84,7 @@ Codeword Stag::readCode(const Quad &q)
 	return c;
 }
 
-void Stag::fillCodeLocations()
-{
+void Stag::fillCodeLocations() {
 	// fill coordinates to be sampled
 	codeLocs = vector<Mat>(48);
 
@@ -104,8 +94,7 @@ void Stag::fillCodeLocations()
 
 	// each quadrant is rotated by HALF_PI
 	// these part is left as is for self-documenting purposes
-	for (int i = 0; i < 4; i++)
-	{
+	for (int i = 0; i < 4; i++) {
 		codeLocs[0 + i * 12] = createMatFromPolarCoords(0.088363142525988, 0.785398163397448 + i * HALF_PI, innerCircleRadius);
 
 		codeLocs[1 + i * 12] = createMatFromPolarCoords(0.206935928182607, 0.459275804122858 + i * HALF_PI, innerCircleRadius);
@@ -181,7 +170,6 @@ void Stag::fillCodeLocations()
 	blackLocs[11].at<double>(1) = 1 - 3 * borderDist;
 	blackLocs[11].at<double>(2) = 1;
 
-
 	whiteLocs[0].at<double>(0) = 0.25;
 	whiteLocs[0].at<double>(1) = -borderDist;
 	whiteLocs[0].at<double>(2) = 1;
@@ -231,9 +219,7 @@ void Stag::fillCodeLocations()
 	whiteLocs[11].at<double>(2) = 1;
 }
 
-
-Mat Stag::createMatFromPolarCoords(double radius, double radians, double circleRadius)
-{
+Mat Stag::createMatFromPolarCoords(double radius, double radians, double circleRadius) {
 	Mat point(3, 1, CV_64FC1);
 	point.at<double>(0) = 0.5 + cos(radians) * radius * (circleRadius / 0.5);
 	point.at<double>(1) = 0.5 - sin(radians) * radius * (circleRadius / 0.5);
