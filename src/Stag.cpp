@@ -52,7 +52,8 @@ void Stag::logResults(string path) {
 }
 
 void Stag::drawResults(cv::Mat &inImage) {
-	drawer.drawQuads(inImage, quadDetector.getQuads());
+//	drawer.drawQuads(inImage, quadDetector.getQuads());
+	drawer.drawMarkers(inImage, markers);
 }
 
 Codeword Stag::readCode(const Quad &q) {

@@ -1,5 +1,5 @@
 #include "opencv2/opencv.hpp"
-#include <ctime>
+#include <chrono>
 #include "Stag.h"
 
 #ifndef OS_WIN
@@ -17,6 +17,8 @@ int main() {
 	}
 
 	Stag stag(11, 7, true);
+	std::chrono::time_point<std::chrono::system_clock> start,end;
+
 	while (true) {
 		cv::Mat rgb_image, gray_image;
 		cap >> rgb_image;
@@ -24,12 +26,12 @@ int main() {
 			break;
 		}
 		cv::cvtColor(rgb_image, gray_image, CV_BGR2GRAY);
-//		std::clock_t start;
-//		double duration = 0;
+		start = std::chrono::system_clock::now();
 		stag.detectMarkers(gray_image);
 		stag.drawResults(rgb_image);
-//		duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
-//		std::cout << "That took " << duration << "\n";
+		end = std::chrono::system_clock::now();
+		std::chrono::duration<double> elapsed = end-start;
+		std::cout << "That took " << elapsed.count() << " s\n";
 		cv::imshow("Image", rgb_image);
 
 		char c = (char) cvWaitKey(25);

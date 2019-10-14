@@ -12,7 +12,12 @@ set(CMAKE_CXX_STANDARD 11)
 
 # Packages
 find_package(Eigen3 REQUIRED)
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 3.4.7 REQUIRED)
+IF (${OpenCV_FOUND})
+   MESSAGE(STATUS "Found OpenCV ${OpenCV_VERSION}")
+ELSE (${OpenCV_FOUND})
+   MESSAGE(STATUS "Could not locate OpenCV.")
+ENDIF (${OpenCV_FOUND})
 
 # Libraries
 set(INCLUDE_DIRS ${EIGEN3_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
